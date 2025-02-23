@@ -22,10 +22,10 @@
 const exec = require('cordova/exec');
 
 const Properties = {
-    // isVisible: true,
-
     Get: (name) => {
-        exec(null, null, 'Properties', 'Get', [name]);
+        return new Promise((resolve, reject) => {
+            exec(resolve, reject, 'Properties', 'Get', [name]);
+        });
     },
 
     Set: (name) => {

@@ -1,66 +1,52 @@
 package com.oleksandrsovenko;
 
+import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaWebView;
+import org.apache.cordova.LOG;
+import org.apache.cordova.PluginResult;
+import org.json.JSONException;
 
-import android.app.Activity;
-import android.app.ActivityManager;
-
-import android.content.Context;
-
-import android.os.Handler;
-
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class Properties extends CordovaPlugin {
     private static final String TAG = "Properties";
 
-    // private static final String ACTION_HIDE = "hide";
-    // private static final String ACTION_SHOW = "show";
-    // private static final String ACTION_READY = "_ready";
-    // private static final String ACTION_BACKGROUND_COLOR_BY_HEX_STRING = "backgroundColorByHexString";
-    // private static final String ACTION_OVERLAYS_WEB_VIEW = "overlaysWebView";
-    // private static final String ACTION_STYLE_DEFAULT = "styleDefault";
-    // private static final String ACTION_STYLE_LIGHT_CONTENT = "styleLightContent";
+    @Override
+    public void initialize(CordovaInterface cordova, CordovaWebView webView) {
+        super.initialize(cordova, webView);
+    }
 
-    // private static final String STYLE_DEFAULT = "default";
-    // private static final String STYLE_LIGHT_CONTENT = "lightcontent";
-
-	@Override
-	public void initialize(CordovaInterface cordova, CordovaWebView webView) {
-		super.initialize(cordova, webView);
-	}
-
-    /**
-     * Executes the request and returns PluginResult.
-     *
-     * @param action            The action to execute.
-     * @param args              JSONArry of arguments for the plugin.
-     * @param callbackContext   The callback id used when calling back into JavaScript.
-     * @return                  True if the action was valid, false otherwise.
-     */
     @Override
     public boolean execute(final String action, final CordovaArgs args, final CallbackContext callbackContext) {
-		if (action.equals("Get")) {
-			try {
-				String name = args.getString(0);
-    			Process process = Runtime.getRuntime().exec("getprop " + name);
-    			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-    			String value = reader.readLine();
-				callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, value));
-				return true;
-			} catch (IOException e) {
-    			e.printStackTrace();
-			}
-		}
+        if (action.equals("Get")) {
+            try {
+                final String name = args.getString(0);
 
-		return false
+                cordova.getThreadPool().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Process process = Runtime.getRuntime().exec("getprop " + name);
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                            String value = reader.readLine();
+                            callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, value));
+                        } catch (IOException e) {
+                            callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, "Error reading property"));
+                            LOG.e(TAG, "Error executing getprop", e);
+                        }
+                    }
+                });
+                return true;
+            } catch (JSONException e) {
+                LOG.e(TAG, "Invalid string argument, use f.i. 'ro.miui.ui.version.code'");
+                callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, "Invalid argument"));
+            }
+        }
+        return false;
     }
 }
-
-
-
-
-
