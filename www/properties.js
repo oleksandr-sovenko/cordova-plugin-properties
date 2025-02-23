@@ -28,6 +28,12 @@ const Properties = {
         });
     },
 
+    GetAll: () => {
+        return new Promise((resolve, reject) => {
+            exec(resolve, reject, 'Properties', 'GetAll', null);
+        });
+    },
+
     Set: (name) => {
         exec(null, null, 'Properties', 'Get', [name]);
     },
