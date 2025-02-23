@@ -1,0 +1,24 @@
+{
+	"name": "cordova-plugin-properties",
+	"version": "1.0.0",
+	"description": "...",
+	"cordova": {
+		"id": "cordova-plugin-properties",
+		"platforms": [
+			"android",
+			"ios"
+		]
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/oleksandr-sovenko/cordova-plugin-properties"
+	},
+	"keywords": [
+		"cordova",
+		"ecosystem:cordova",
+		"cordova-android"
+		"cordova-ios"
+	],
+	"author": "Oleksandr Sovenko",
+	"license": "MIT"
+}

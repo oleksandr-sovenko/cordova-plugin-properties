@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="cordova-plugin-getprop" version="1.0.0" xmlns="http://apache.org/cordova/ns/plugins/1.0">
+	<name>cordova-plugin-properties</name>
+
+    <js-module src="www/properties.js" name="getprop">
+        <clobbers target="window.Properties" />
+    </js-module>	
+  
+	<platform name="android">
+		<config-file parent="/*" target="res/xml/config.xml">
+			<feature name="Properties">
+				<param name="android-package" value="com.oleksandrsovenko.Properties"/>
+				<param name="onload" value="true" />
+			</feature>
+		</config-file>
+
+		<source-file src="src/android/Properties.java" target-dir="src/com/oleksandrsovenko"/>
+	</platform>
+  
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="Properties">
+                <param name="ios-package" value="Properties" />
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
+        <header-file src="src/ios/Properties.h" />
+        <source-file src="src/ios/Properties.m" />
+    </platform>
+</plugin>
