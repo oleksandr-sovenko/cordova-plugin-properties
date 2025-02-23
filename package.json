@@ -16,7 +16,7 @@
 	"keywords": [
 		"cordova",
 		"ecosystem:cordova",
-		"cordova-android"
+		"cordova-android",
 		"cordova-ios"
 	],
 	"author": "Oleksandr Sovenko",

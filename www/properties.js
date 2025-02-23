@@ -28,7 +28,7 @@ const Properties = {
         exec(null, null, 'Properties', 'Get', [name]);
     },
 
-    Get: (name) => {
+    Set: (name) => {
         exec(null, null, 'Properties', 'Get', [name]);
     },
 };
