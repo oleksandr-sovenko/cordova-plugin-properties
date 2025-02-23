@@ -35,7 +35,9 @@ const Properties = {
     },
 
     Set: (name, value) => {
-        exec(null, null, 'Properties', 'Set', [name, value]);
+        return new Promise((resolve, reject) => {
+            exec(resolve, reject, 'Properties', 'Set', [name]);
+        });
     },
 };
 

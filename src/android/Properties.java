@@ -8,6 +8,7 @@ import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.LOG;
 import org.apache.cordova.PluginResult;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -82,13 +83,11 @@ public class Properties extends CordovaPlugin {
                         try {
                             Process process = Runtime.getRuntime().exec("setprop " + name + " " + value);
                             process.waitFor();
-                            
-                            JSONObject result = new JSONObject();
-                            result.put(name, value);
-                            
-                            callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, result.toString()));
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                            String result = reader.readLine();
+                            callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, result));
                             LOG.e(TAG, "setprop " + name + " = " + value);
-                        } catch (IOException | InterruptedException | JSONException e) {
+                        } catch (IOException | InterruptedException e) {
                             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, "Error setting property"));
                             LOG.e(TAG, "Error executing setprop", e);
                         }
