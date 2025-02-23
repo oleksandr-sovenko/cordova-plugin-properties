@@ -23,7 +23,29 @@ public class Properties extends CordovaPlugin {
 
     @Override
     public boolean execute(final String action, final CordovaArgs args, final CallbackContext callbackContext) {
-        if (action.equals("Get")) {
+        if (action.equals("GetAll")) {
+            cordova.getThreadPool().execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Process process = Runtime.getRuntime().exec("getprop");
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                        StringBuilder properties = new StringBuilder();
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            properties.append(line).append("\n");
+                        }
+                        callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, properties.toString()));
+                        LOG.e(TAG, "getprop all properties retrieved");
+                    } catch (IOException e) {
+                        callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, "Error retrieving properties"));
+                        LOG.e(TAG, "Error executing getprop", e);
+                    }
+                }
+            });
+
+            return true;
+        } else if (action.equals("Get")) {
             try {
                 final String name = args.getString(0);
                 LOG.e(TAG, "getprop " + name);
@@ -48,32 +70,40 @@ public class Properties extends CordovaPlugin {
                 LOG.e(TAG, "Invalid string argument, use f.i. 'ro.miui.ui.version.code'");
                 callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, "Invalid argument"));
             }
-        } else if (action.equals("GetAll")) {
-            cordova.getThreadPool().execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Process process = Runtime.getRuntime().exec("getprop");
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                        StringBuilder properties = new StringBuilder();
-                        String line;
-                        while ((line = reader.readLine()) != null) {
-                            properties.append(line).append("\n");
+        } else if (action.equals("Set")) {
+            try {
+                final String name = args.getString(0);
+                final String value = args.getString(1);
+                LOG.e(TAG, "setprop " + name + " " + value);
+
+                cordova.getThreadPool().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Process process = Runtime.getRuntime().exec("setprop " + name + " " + value);
+                            process.waitFor();
+                            
+                            JSONObject result = new JSONObject();
+                            result.put(name, value);
+                            
+                            callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, result.toString()));
+                            LOG.e(TAG, "setprop " + name + " = " + value);
+                        } catch (IOException | InterruptedException | JSONException e) {
+                            callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, "Error setting property"));
+                            LOG.e(TAG, "Error executing setprop", e);
                         }
-                        callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, properties.toString()));
-                        LOG.e(TAG, "getprop all properties retrieved");
-                    } catch (IOException e) {
-                        callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, "Error retrieving properties"));
-                        LOG.e(TAG, "Error executing getprop", e);
                     }
-                }
-            });
-            return true;
+                });
+                return true;
+            } catch (JSONException e) {
+                LOG.e(TAG, "Invalid arguments, expected property name and value");
+                callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, "Invalid arguments"));
+            }
         }
+
         return false;
     }
 }
-
 
 // console.log(await Properties.Get('ro.miui.ui.version'))
 

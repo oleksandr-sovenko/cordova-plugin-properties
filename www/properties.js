@@ -22,20 +22,20 @@
 const exec = require('cordova/exec');
 
 const Properties = {
-    Get: (name) => {
-        return new Promise((resolve, reject) => {
-            exec(resolve, reject, 'Properties', 'Get', [name]);
-        });
-    },
-
     GetAll: () => {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, 'Properties', 'GetAll', null);
         });
     },
 
-    Set: (name) => {
-        exec(null, null, 'Properties', 'Get', [name]);
+    Get: (name) => {
+        return new Promise((resolve, reject) => {
+            exec(resolve, reject, 'Properties', 'Get', [name]);
+        });
+    },
+
+    Set: (name, value) => {
+        exec(null, null, 'Properties', 'Set', [name, value]);
     },
 };
 
