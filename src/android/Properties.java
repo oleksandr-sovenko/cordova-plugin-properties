@@ -125,6 +125,3 @@ public class Properties extends CordovaPlugin {
         return false;
     }
 }
-
-// console.log(await Properties.Get('ro.miui.ui.version'))
-
