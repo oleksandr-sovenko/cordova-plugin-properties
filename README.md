@@ -1,4 +1,4 @@
-# cordova-plugin-detect-screenshot-ng
+# cordova-plugin-properties
 Get Properties on Cordova for Android and iOS
 
 ## Installation
