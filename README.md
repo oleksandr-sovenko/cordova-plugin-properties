@@ -1,22 +1,18 @@
 # cordova-plugin-detect-screenshot-ng
-Detects screenshots on Cordova for Android and iOS. This is a fork of the official plugin https://github.com/restocks/cordova-plugin-detect-screenshot
+Get Properties on Cordova for Android and iOS
 
 ## Installation
-`cordova plugin add https://github.com/EstPress/cordova-plugin-detect-screenshot-ng`
+`cordova plugin add https://github.com/oleksandr-sovenko/cordova-plugin-properties`
 
 ## Usage
-When a screenshot occurs, a 'screenshot' event is triggered. Simply listen for this event in your javascript.
 
-    document.addEventListener("screenshot", function() {
-        window.alert("Screenshot");
-    }, false);
+    await Properties.GetAll()
+    await Properties.Get('ro.miui.ui.version')
     
 ## License 
 The MIT License (MIT)
 
-Copyright (c) 2017 EstPress
-
-Copyright (c) 2016 Restocks
+Copyright (c) 2025 Oleksandr Sovenko
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
